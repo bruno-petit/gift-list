@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@700&display=swap" rel="stylesheet">
+    <style>
+    html, body {
+        height: 100%;
+    }
+    html {
+        display: table;
+        margin: auto;
+    }
+    body {
+        vertical-align: middle;
+        font-family: 'Cormorant Garamond', serif;
+        /* width: 300px; */
+    }
+    h1 {
+        /* margin-top: 50px; */
+        text-align: left;
+        /* background-color: LightBlue; */
+        background-color: #004080;
+        color: white;
+        font-family: 'Cormorant Garamond', serif;
+        padding-left: 20px;
+        border-radius: 10px;
+        /* box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1), 0 2px 5px 0 rgba(0, 0, 0, 0.08); */
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+    button {
+        background-color: white;
+        color: #008CBA;
+        border: 2px solid #008CBA;
+        padding: 7px 12px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        transition-duration: 0.4s;
+        cursor: pointer;
+        font-family: 'Cormorant Garamond', serif;
+        margin-top: 10px;
+        border-radius: 5px;
+    }
+    button:hover {
+        background-color: #008CBA;
+        color: white;
+    }
+
+    .imgContainer {
+        /* background: transparent; */
+        /* background-position: center center;
+        background-repeat: no-repeat;
+        overflow: hidden;
+        border: 1px dotted red;
+        max-height: 140px; */
+        margin-bottom: 10px;
+    }
+
+    .buttonInfo{
+        width: 60px;
+        background-color: #008CBA;
+        color: white;
+        border: 2px solid #008CBA;
+        padding: 7px 12px;
+        margin: auto;
+        margin-top: 10px;
+        border-radius: 5px;
+    }
+
+    .grid{
+        display: grid;
+        /* border: 1px dotted black; */
+        grid: auto / auto auto auto auto auto;
+        padding: 0px;
+        grid-gap: 20px;
+        width:100%;
+        margin-bottom: 70px;
+    }
+
+    .objContainer{
+        width: 170px;
+        height: 320px;
+        border: 1px solid lightGray;
+        border-radius: 10px;
+        position: relative;
+        transition-duration: 0.4s;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.15), 0 2px 5px 0 rgba(0, 0, 0, 0.09);
+    }
+    .objContainer:hover{
+        /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
+    }
+
+    .objTable{
+        width: 100%;
+        height: 10px;
+        text-align: center;
+        /* display: inline; */
+        position:absolute;
+        top: 15px;
+    }
+
+    .priceTable{
+        width: 100%;
+        height: 10px;
+        text-align: center;
+        /* display: inline; */
+        position:absolute;
+        bottom: 10px;
+    }
+
+    @media only screen and (max-width: 500px) {
+        .grid{
+            grid: auto / auto
+        }
+        .objContainer{
+            margin-left: auto;
+            margin-right: auto;
+            /* width: 100px; */
+            /* height: 150px; */
+            /* border: 1px dotted red; */
+        }
+    }
+    </style>
+</head>
+<body>
+    <p style="font-weight:700;font-size:large;font-style:italic;text-align:center;">
+        Vous êtes bien sur notre liste de mariage.
+        Merci à vous pour votre gentille attention&nbsp!
+        Nous avons hâte de vous revoir&nbsp:)
+    </p>
+    <div class="div" style="text-align:center;margin-bottom:50px">
+        <button type="button" id="freeGiftButton" >
+            Don libre
+        </button>
+    </div>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.5.1/tabletop.min.js'></script>
+    <script type='text/javascript'>
+    var spreadsheetUrl = "https://docs.google.com/"
+        + "spreadsheets/d/***ADD_YOUR_PUBLIC_GOOGLE_SHEET_URL_HERE***/pubhtml?gid=0";
+    var formUrl = "https://docs.google.com/"
+        + "forms/d/e/***ADD_YOUR_URL_FORM_HERE****/viewform?usp=pp_url";
+
+    function init()
+    {
+        Tabletop.init({ key: spreadsheetUrl, callback: createTable, simpleSheet: false })
+        document.getElementById("freeGiftButton").onclick = function(button) { window.open(createFormLinkWithPrefill("Don libre", "")); }
+    }
+
+    function createFormLinkWithPrefill(obj, price)
+    {
+        // cf https://support.google.com/a/users/answer/9308781?hl=en
+        var url = formUrl + "&entry.1800821133=" + encodeURI((obj.toString()).split(' ').join('+'))
+            + "&entry.1401325041=" + price.split(' ')[0];
+        return url;
+    }
+
+    function createObject(categoryIndex, objName, objDescription, imgSrc, price, amount) {
+        if (objName.startsWith("#")) { return; }
+
+        // Object Container
+        var objContainer = document.createElement("div");
+        objContainer.classList.add("objContainer");
+        // objContainer.onclick = function(button) {  }
+        document.getElementById("grid" + categoryIndex).appendChild(objContainer);
+
+        // Object Table
+        var objTable = document.createElement("Table");
+        objTable.classList.add("objTable");
+        objContainer.appendChild(objTable);
+
+        // Object Image
+        var imgArea = document.createElement("TR");
+        imgArea.classList.add("imgArea");
+        objTable.appendChild(imgArea);
+        let imgContainer = document.createElement("div");
+        imgContainer.classList.add("imgContainer");
+        imgArea.appendChild(imgContainer);
+        var img = document.createElement('img');
+        img.style.maxWidth = '95%';
+        img.style.height = '100px';
+        imgContainer.appendChild(img);
+        if (imgSrc == "") {
+            img.src = "https://www.freepngimg.com/thumb/gift/10-gift-box-png-image.png";
+        } else {
+            img.src = imgSrc;
+        }
+
+        // Object Title
+        var titleArea = document.createElement("TR");
+        objTable.appendChild(titleArea);
+        titleArea.style.fontWeight = "700";
+        titleArea.style.fontSize = "large";
+        titleArea.style.color = "#004080";
+        titleArea.style.paddingBottom = "15px";
+        var text = document.createTextNode(objName);
+        titleArea.appendChild(text);
+
+        // Object Description
+        var descriptionArea = document.createElement("TR");
+        objTable.appendChild(descriptionArea);
+        descriptionArea.style.fontWeight = "300";
+        descriptionArea.style.fontStyle = "italic";
+        descriptionArea.style.paddingBottom = "15px";
+        var text = document.createTextNode(objDescription);
+        descriptionArea.appendChild(text);
+
+        // Price Table
+        // var between = document.createElement("div");
+        // objContainer.appendChild(between);
+        var priceTable = document.createElement("Table");
+        priceTable.classList.add("priceTable");
+        objContainer.appendChild(priceTable);
+
+        // Object Price
+        var amountNumber = Number(amount.slice(0, -2).replace(/\s/g,''));
+        var priceNumber = Number(price.slice(0, -2).replace(/\s/g,''));
+        var trPrice = document.createElement("TR");
+        trPrice.style.fontSize = "x-large";
+        priceTable.appendChild(trPrice);
+        let priceText = price;
+        if (amountNumber > 0 && amountNumber < priceNumber) {
+            let amountWrapper = document.createElement("span");
+            trPrice.appendChild(amountWrapper);
+            let amountNode = document.createTextNode(amount);
+            // amountWrapper.style.fontWeight = "700";
+            amountWrapper.style.color = "#D00000";
+            amountWrapper.appendChild(amountNode);
+            priceText = " / " + price;
+        }
+        let priceWrapper = document.createElement("span");
+        trPrice.appendChild(priceWrapper);
+        // if (amountNumber >= priceNumber) { priceWrapper.style.color = "#D00000"; }
+        if (amountNumber >= priceNumber) { priceWrapper.style.color = "white"; }
+        var priceNode = document.createTextNode(priceText);
+        priceWrapper.appendChild(priceNode);
+
+        // BOUTON DE DON
+        var tdButton = document.createElement("TR");
+        priceTable.appendChild(tdButton);
+        if (amountNumber >= priceNumber) {
+            let buttonInfoWrapper = document.createElement("div");
+            buttonInfoWrapper.style.fontStyle = "italic";
+            buttonInfoWrapper.style.fontWeight = "700";
+            buttonInfoWrapper.style.fontSize = "large";
+            buttonInfoWrapper.classList.add("buttonInfo")
+            tdButton.appendChild(buttonInfoWrapper);
+            let giftInfo = document.createTextNode("Offert !");
+            buttonInfoWrapper.appendChild(giftInfo)
+        } else {
+            var giftButton = document.createElement("button");
+            giftButton.innerHTML = "Participer";
+            let giftStr = (amountNumber > 0) ? (Number(price.slice(0, -2)) - amountNumber) + " €" : price;
+            giftButton.setAttribute("name", createFormLinkWithPrefill(objName, giftStr));
+            giftButton.onclick = function(button) { window.open(this.name); }
+            tdButton.appendChild(giftButton);
+        }
+    }
+
+    function createTable(data, tabletop)
+    {
+        // create all sectors
+        var sectors = [];
+        for (let elem of data.Liste.elements)
+        {
+            if (!sectors.includes(elem.Secteur))
+            {
+                let sectorTitle = document.createElement("h1");
+                let sectorTitleText = document.createTextNode(elem.Secteur);
+                sectorTitle.appendChild(sectorTitleText);
+                document.body.appendChild(sectorTitle);
+
+                let grid = document.createElement("div");
+                grid.setAttribute("id", "grid" + elem.Secteur.toString());
+                grid.classList.add("grid")
+                document.body.appendChild(grid);
+
+                sectors.push(elem.Secteur);
+            }
+        }
+
+        // Add objects
+        data.Liste.elements.forEach((elem) => {
+            createObject(elem.Secteur, elem.Objet, elem.Description, elem.Lien_vers_image, elem.Prix, elem.Dons);
+        });
+        // alert('Successfully processed!')
+    }
+
+    window.addEventListener('DOMContentLoaded', init)
+    </script>
+</body>
+</html>
